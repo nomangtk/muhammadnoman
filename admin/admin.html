@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel | M.Noman Portfolio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --accent: #c6ff00;
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #888;
+      --danger: #ff4d4d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── LOGIN SCREEN ─────────────────────────────── */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+    }
+
+    .form-label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .form-control, .form-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: var(--surface2);
+      border-color: var(--accent);
+      color: var(--text);
+      box-shadow: 0 0 0 3px rgba(198,255,0,0.1);
+    }
+
+    .form-control::placeholder { color: var(--muted); }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #0d0d0d;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 11px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      width: 100%;
+    }
+
+    .btn-accent:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-accent:active { transform: translateY(0); }
+
+    .login-error {
+      background: rgba(255,77,77,0.12);
+      border: 1px solid rgba(255,77,77,0.3);
+      color: var(--danger);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      display: none;
+      margin-top: 12px;
+    }
+
+    /* ─── ADMIN LAYOUT ─────────────────────────────── */
+    #adminApp { display: none; min-height: 100vh; }
+
+    .admin-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .admin-logo span {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    .admin-body {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* ─── SIDEBAR ──────────────────────────────────── */
+    .admin-sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 20px;
+    }
+
+    .sidebar-section-label {
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 12px;
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .cat-filter-list { list-style: none; }
+
+    .cat-filter-list li {
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .cat-filter-list li:hover { background: var(--surface2); color: var(--text); }
+    .cat-filter-list li.active { background: rgba(198,255,0,0.1); color: var(--accent); }
+
+    .cat-count {
+      background: var(--border);
+      color: var(--muted);
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .cat-filter-list li.active .cat-count {
+      background: rgba(198,255,0,0.2);
+      color: var(--accent);
+    }
+
+    /* ─── MAIN CONTENT ─────────────────────────────── */
+    .admin-main { padding: 28px 32px; }
+
+    .main-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .main-topbar h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .main-topbar h2 span {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 0.9rem;
+      margin-left: 8px;
+    }
+
+    .btn-add {
+      background: var(--accent);
+      color: #0d0d0d;
+      border: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-add:hover { opacity: 0.85; }
+
+    /* ─── PROJECTS TABLE ───────────────────────────── */
+    .projects-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .projects-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .projects-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 13px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .projects-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.87rem;
+      vertical-align: middle;
+    }
+
+    .projects-table tr:last-child td { border-bottom: none; }
+
+    .projects-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .proj-thumb {
+      width: 52px;
+      height: 38px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .proj-thumb video, .proj-thumb img {
+      width: 52px;
+      height: 38px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .proj-title { font-weight: 600; color: var(--text); }
+    .proj-desc { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+    .cat-badge {
+      background: rgba(198,255,0,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(198,255,0,0.2);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .btn-edit, .btn-delete {
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-edit {
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      margin-right: 5px;
+    }
+
+    .btn-delete {
+      background: rgba(255,77,77,0.12);
+      color: var(--danger);
+    }
+
+    .btn-edit:hover { background: rgba(255,255,255,0.13); }
+    .btn-delete:hover { background: rgba(255,77,77,0.22); }
+
+    .empty-state {
+      text-align: center;
+      padding: 56px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state i { font-size: 2.5rem; margin-bottom: 14px; display: block; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* ─── MODAL ────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-title i { color: var(--accent); }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--surface2);
+      border: none;
+      color: var(--muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    .form-group { margin-bottom: 18px; }
+
+    .file-drop {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .file-drop:hover, .file-drop.dragover { border-color: var(--accent); color: var(--accent); }
+    .file-drop i { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+
+    .file-preview {
+      margin-top: 12px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .file-preview video, .file-preview img {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .modal-footer-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 9px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+
+    .btn-cancel:hover { color: var(--text); }
+
+    .btn-save {
+      background: var(--accent);
+      color: #0d0d0d;
+      border: none;
+      padding: 9px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-save:hover { opacity: 0.85; }
+
+    /* ─── TOAST ────────────────────────────────────── */
+    .toast-wrap {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast-msg {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      animation: slideIn 0.25s ease;
+      min-width: 220px;
+    }
+
+    .toast-msg.error { border-left-color: var(--danger); }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ─── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 900px) {
+      .admin-body { grid-template-columns: 1fr; }
+      .admin-sidebar { display: none; }
+      .admin-main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">M.Noman</div>
+    <div class="login-sub">Portfolio Admin Panel</div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="loginPassword" class="form-control" placeholder="Enter admin password" />
+    </div>
+    <button class="btn-accent mt-2" onclick="doLogin()">
+      <i class="fa-solid fa-lock-open me-2"></i> Sign In
+    </button>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+
+    <p style="color:var(--muted);font-size:0.75rem;margin-top:20px;">
+      Default password: <code style="color:var(--accent)">admin123</code> — change it in the script.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ADMIN APP
+════════════════════════════════════════════════════ -->
+<div id="adminApp">
+
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="admin-logo">M.Noman <span>/ Admin Panel</span></div>
+    <button class="btn-logout" onclick="doLogout()">
+      <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+    </button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-section-label">Overview</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="statTotal">0</div>
+          <div class="stat-label">Total Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statCats">0</div>
+          <div class="stat-label">Categories</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Filter by Category</div>
+      <ul class="cat-filter-list" id="catFilterList">
+        <li class="active" data-cat="all" onclick="filterByCategory('all', this)">
+          All Projects <span class="cat-count" id="countAll">0</span>
+        </li>
+        <li data-cat="talking-head" onclick="filterByCategory('talking-head', this)">
+          Talking Head <span class="cat-count" id="count-talking-head">0</span>
+        </li>
+        <li data-cat="short-form" onclick="filterByCategory('short-form', this)">
+          Short-Form Video <span class="cat-count" id="count-short-form">0</span>
+        </li>
+        <li data-cat="long-form" onclick="filterByCategory('long-form', this)">
+          Long-Form Video <span class="cat-count" id="count-long-form">0</span>
+        </li>
+        <li data-cat="thumbnail" onclick="filterByCategory('thumbnail', this)">
+          Thumbnail Design <span class="cat-count" id="count-thumbnail">0</span>
+        </li>
+        <li data-cat="animation" onclick="filterByCategory('animation', this)">
+          AI Animation <span class="cat-count" id="count-animation">0</span>
+        </li>
+        <li data-cat="avatar" onclick="filterByCategory('avatar', this)">
+          AI Avatar <span class="cat-count" id="count-avatar">0</span>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <div class="main-topbar">
+        <h2>Projects <span id="tableCountLabel"></span></h2>
+        <button class="btn-add" onclick="openAddModal()">
+          <i class="fa-solid fa-plus"></i> Add Project
+        </button>
+      </div>
+
+      <div class="projects-table-wrap">
+        <table class="projects-table">
+          <thead>
+            <tr>
+              <th>Media</th>
+              <th>Project</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="projectsTableBody">
+          </tbody>
+        </table>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <i class="fa-solid fa-film"></i>
+          <p>No projects yet. Click <strong>Add Project</strong> to get started.</p>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ADD / EDIT MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-title"><i class="fa-solid fa-film"></i> <span id="modalTitleText">Add Project</span></div>
+
+    <div class="form-group">
+      <label class="form-label">Project Title *</label>
+      <input type="text" id="projTitle" class="form-control" placeholder="e.g. AI Sales Avatar" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <input type="text" id="projDesc" class="form-control" placeholder="Short description (optional)" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Category *</label>
+      <select id="projCategory" class="form-select">
+        <option value="">Select category...</option>
+        <option value="talking-head">Realistic AI Talking-Head Videos</option>
+        <option value="short-form">Short-Form Video Editing</option>
+        <option value="long-form">Long-Form Video Editing</option>
+        <option value="thumbnail">Thumbnail Design</option>
+        <option value="animation">AI Animation Videos</option>
+        <option value="avatar">AI Cloned Avatar Videos</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Media Type</label>
+      <select id="projMediaType" class="form-select" onchange="handleMediaTypeChange()">
+        <option value="video">Video (.mp4)</option>
+        <option value="image">Image (.jpg/.png/.webp)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Media File</label>
+      <div class="file-drop" id="fileDrop" onclick="document.getElementById('mediaFileInput').click()"
+           ondragover="event.preventDefault();this.classList.add('dragover')"
+           ondragleave="this.classList.remove('dragover')"
+           ondrop="handleFileDrop(event)">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        Click or drag & drop your video / image here
+      </div>
+      <input type="file" id="mediaFileInput" accept="video/*,image/*" style="display:none" onchange="handleFileSelect(this)" />
+      <div class="file-preview" id="filePreview"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Or paste a file path / URL</label>
+      <input type="text" id="projMediaPath" class="form-control" placeholder="assets/my-video.mp4  or  https://..." />
+    </div>
+
+    <div class="modal-footer-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveProject()"><i class="fa-solid fa-floppy-disk me-1"></i> Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  /* ──────────────────────────────────────────────────
+     CONFIG — change this password!
+  ────────────────────────────────────────────────── */
+  const ADMIN_PASSWORD = 'admin123';
+  const STORAGE_KEY    = 'noman_portfolio_projects';
+
+  /* ──────────────────────────────────────────────────
+     STATE
+  ────────────────────────────────────────────────── */
+  let projects = [];
+  let editingId = null;
+  let currentFilter = 'all';
+  let selectedFileData = null;   // base64 of uploaded file
+
+  const CATEGORY_LABELS = {
+    'talking-head': 'Realistic AI Talking-Head Videos',
+    'short-form':   'Short-Form Video Editing',
+    'long-form':    'Long-Form Video Editing',
+    'thumbnail':    'Thumbnail Design',
+    'animation':    'AI Animation Videos',
+    'avatar':       'AI Cloned Avatar Videos',
+  };
+
+  /* ──────────────────────────────────────────────────
+     LOGIN / LOGOUT
+  ────────────────────────────────────────────────── */
+  function doLogin() {
+    const pw = document.getElementById('loginPassword').value;
+    if (pw === ADMIN_PASSWORD) {
+      sessionStorage.setItem('noman_admin', '1');
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminApp').style.display = 'block';
+      loadProjects();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogout() {
+    sessionStorage.removeItem('noman_admin');
+    location.reload();
+  }
+
+  // Auto-login if session exists
+  if (sessionStorage.getItem('noman_admin') === '1') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+  }
+
+  /* ──────────────────────────────────────────────────
+     STORAGE
+  ────────────────────────────────────────────────── */
+  function loadProjects() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    projects = stored ? JSON.parse(stored) : [];
+    renderAll();
+  }
+
+  function saveToStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+  }
+
+  /* ──────────────────────────────────────────────────
+     RENDER
+  ────────────────────────────────────────────────── */
+  function renderAll() {
+    updateStats();
+    renderTable();
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent = projects.length;
+    const cats = new Set(projects.map(p => p.category)).size;
+    document.getElementById('statCats').textContent = cats;
+
+    // count per category
+    document.getElementById('countAll').textContent = projects.length;
+    Object.keys(CATEGORY_LABELS).forEach(cat => {
+      const el = document.getElementById('count-' + cat);
+      if (el) el.textContent = projects.filter(p => p.category === cat).length;
+    });
+  }
+
+  function renderTable() {
+    const filtered = currentFilter === 'all'
+      ? projects
+      : projects.filter(p => p.category === currentFilter);
+
+    const tbody = document.getElementById('projectsTableBody');
+    const empty = document.getElementById('emptyState');
+
+    document.getElementById('tableCountLabel').textContent =
+      filtered.length ? `(${filtered.length})` : '';
+
+    if (!filtered.length) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(p => `
+      <tr>
+        <td>${renderThumb(p)}</td>
+        <td>
+          <div class="proj-title">${escHtml(p.title)}</div>
+          ${p.description ? `<div class="proj-desc">${escHtml(p.description)}</div>` : ''}
+        </td>
+        <td><span class="cat-badge">${escHtml(CATEGORY_LABELS[p.category] || p.category)}</span></td>
+        <td>
+          <button class="btn-edit" onclick="openEditModal('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-delete" onclick="deleteProject('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function renderThumb(p) {
+    const src = p.mediaData || p.mediaPath || '';
+    if (!src) return `<div class="proj-thumb"><i class="fa-solid fa-photo-film"></i></div>`;
+    if (p.mediaType === 'video') {
+      return `<div class="proj-thumb"><video src="${escHtml(src)}" muted></video></div>`;
+    }
+    return `<div class="proj-thumb"><img src="${escHtml(src)}" alt="${escHtml(p.title)}" /></div>`;
+  }
+
+  /* ──────────────────────────────────────────────────
+     FILTER
+  ────────────────────────────────────────────────── */
+  function filterByCategory(cat, el) {
+    currentFilter = cat;
+    document.querySelectorAll('.cat-filter-list li').forEach(li => li.classList.remove('active'));
+    el.classList.add('active');
+    renderTable();
+  }
+
+  /* ──────────────────────────────────────────────────
+     MODAL — OPEN / CLOSE
+  ────────────────────────────────────────────────── */
+  function openAddModal() {
+    editingId = null;
+    selectedFileData = null;
+    document.getElementById('modalTitleText').textContent = 'Add Project';
+    document.getElementById('projTitle').value = '';
+    document.getElementById('projDesc').value = '';
+    document.getElementById('projCategory').value = '';
+    document.getElementById('projMediaType').value = 'video';
+    document.getElementById('projMediaPath').value = '';
+    document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('filePreview').innerHTML = '';
+    document.getElementById('projectModal').classList.add('open');
+  }
+
+  function openEditModal(id) {
+    const p = projects.find(x => x.id === id);
+    if (!p) return;
+    editingId = id;
+    selectedFileData = p.mediaData || null;
+    document.getElementById('modalTitleText').textContent = 'Edit Project';
+    document.getElementById('projTitle').value = p.title;
+    document.getElementById('projDesc').value = p.description || '';
+    document.getElementById('projCategory').value = p.category;
+    document.getElementById('projMediaType').value = p.mediaType || 'video';
+    document.getElementById('projMediaPath').value = p.mediaPath || '';
+
+    const preview = document.getElementById('filePreview');
+    if (p.mediaData) {
+      preview.style.display = 'block';
+      preview.innerHTML = p.mediaType === 'video'
+        ? `<video src="${p.mediaData}" controls style="width:100%;max-height:160px;border-radius:8px;"></video>`
+        : `<img src="${p.mediaData}" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;" />`;
+    } else {
+      preview.style.display = 'none';
+      preview.innerHTML = '';
+    }
+
+    document.getElementById('projectModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('projectModal').classList.remove('open');
+    editingId = null;
+    selectedFileData = null;
+  }
+
+  /* ──────────────────────────────────────────────────
+     FILE HANDLING
+  ────────────────────────────────────────────────── */
+  function handleMediaTypeChange() {
+    const type = document.getElementById('projMediaType').value;
+    document.getElementById('mediaFileInput').accept = type === 'video' ? 'video/*' : 'image/*';
+  }
+
+  function handleFileSelect(input) {
+    if (input.files && input.files[0]) processFile(input.files[0]);
+  }
+
+  function handleFileDrop(e) {
+    e.preventDefault();
+    document.getElementById('fileDrop').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  }
+
+  function processFile(file) {
+    const isVideo = file.type.startsWith('video/');
+    document.getElementById('projMediaType').value = isVideo ? 'video' : 'image';
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      selectedFileData = e.target.result;
+      const preview = document.getElementById('filePreview');
+      preview.style.display = 'block';
+      preview.innerHTML = isVideo
+        ? `<video src="${selectedFileData}" controls style="width:100%;max-height:160px;border-radius:8px;"></video>`
+        : `<img src="${selectedFileData}" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;" />`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ──────────────────────────────────────────────────
+     SAVE / DELETE
+  ────────────────────────────────────────────────── */
+  function saveProject() {
+    const title    = document.getElementById('projTitle').value.trim();
+    const desc     = document.getElementById('projDesc').value.trim();
+    const category = document.getElementById('projCategory').value;
+    const mediaType= document.getElementById('projMediaType').value;
+    const mediaPath= document.getElementById('projMediaPath').value.trim();
+
+    if (!title)    return showToast('Please enter a project title.', 'error');
+    if (!category) return showToast('Please select a category.', 'error');
+    if (!selectedFileData && !mediaPath) return showToast('Please add a media file or path.', 'error');
+
+    if (editingId) {
+      const idx = projects.findIndex(p => p.id === editingId);
+      if (idx !== -1) {
+        projects[idx] = {
+          ...projects[idx], title, description: desc, category,
+          mediaType, mediaPath, mediaData: selectedFileData
+        };
+      }
+      showToast('Project updated!');
+    } else {
+      projects.push({
+        id: 'proj_' + Date.now(),
+        title, description: desc, category,
+        mediaType, mediaPath, mediaData: selectedFileData
+      });
+      showToast('Project added!');
+    }
+
+    saveToStorage();
+    renderAll();
+    closeModal();
+  }
+
+  function deleteProject(id) {
+    if (!confirm('Delete this project? This cannot be undone.')) return;
+    projects = projects.filter(p => p.id !== id);
+    saveToStorage();
+    renderAll();
+    showToast('Project deleted.');
+  }
+
+  /* ──────────────────────────────────────────────────
+     TOAST
+  ────────────────────────────────────────────────── */
+  function showToast(msg, type = 'success') {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (type === 'error' ? ' error' : '');
+    el.innerHTML = `<i class="fa-solid fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${msg}`;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  /* ──────────────────────────────────────────────────
+     UTIL
+  ────────────────────────────────────────────────── */
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Close modal on overlay click
+  document.getElementById('projectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Init if already logged in
+  if (sessionStorage.getItem('noman_admin') === '1') loadProjects();
+</script>
+</body>
+</html>

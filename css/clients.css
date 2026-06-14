@@ -1,0 +1,43 @@
+.clients{
+    padding:40px 0;
+    border-top:1px solid rgba(255,255,255,.1);
+    border-bottom:1px solid rgba(255,255,255,.1);
+    overflow:hidden;
+}
+
+.marquee-content{
+    display:flex;
+    gap:80px;
+    width:max-content;
+    animation:scroll 20s linear infinite;
+}
+
+.marquee-content span{
+    font-size:2rem;
+    font-weight:700;
+    color:#888;
+}
+
+@keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+}
+
+.tools-heading{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.tools-heading h2{
+    font-size:clamp(2.5rem,5vw,4rem);
+    font-weight:800;
+    color:#fff;
+    margin-bottom:10px;
+}
+
+.tools-heading p{
+    color: #c6ff00;
+    font-size:1rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}

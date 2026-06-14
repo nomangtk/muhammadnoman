@@ -1,0 +1,25 @@
+body{
+    background:#0f0f0f;
+    color:#fff;
+    font-family:Inter,sans-serif;
+}
+
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#111;
+}
+
+.card{
+    background:#181818;
+    border-radius:20px;
+    padding:20px;
+}
+
+button{
+    background:#c6ff00;
+    color:#000;
+    border:none;
+    padding:12px 24px;
+    border-radius:10px;
+}
