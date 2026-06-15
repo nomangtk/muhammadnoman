@@ -82,6 +82,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 10px;
+  height: 400px;
   background: #111;
   margin-bottom: 8px;
   cursor: pointer;
