@@ -192,10 +192,10 @@ color:white;
 }
 
 .subtitle{
-color:var(--accent);
-font-weight:700;
-letter-spacing:2px;
-margin-left: 8px;
+color: var(--accent);
+font-weight: 700;
+letter-spacing: 2px;
+margin-left: 6px;
 }
 
 /* .hero-title{ 
