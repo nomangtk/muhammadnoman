@@ -2,12 +2,23 @@
 
 const cursor = document.querySelector(".cursor");
 
-document.addEventListener("mousemove",(e)=>{
+if (cursor) {
+  cursor.style.display = "none";
 
-cursor.style.left=e.clientX+"px";
-cursor.style.top=e.clientY+"px";
+  document.addEventListener("mousemove", (e) => {
+    cursor.style.display = "block";
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
 
-});
+  document.addEventListener("mouseleave", () => {
+    cursor.style.display = "none";
+  });
+
+  document.addEventListener("mouseenter", () => {
+    cursor.style.display = "block";
+  });
+}
 
 // HERO ANIMATION
 
